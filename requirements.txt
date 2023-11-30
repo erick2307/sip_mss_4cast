@@ -1,0 +1,12 @@
+numpy 
+matplotlib 
+pandas 
+geopandas 
+tqdm 
+contextily
+statsmodels 
+pmdarima 
+scikit-learn 
+cmcrameri 
+opencv-python 
+cloudpickle
