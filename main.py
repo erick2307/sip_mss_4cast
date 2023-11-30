@@ -21,11 +21,11 @@ from sklearn.metrics import mean_squared_error
 # Parameters for area
 MESH_ID = 533936534
 AOI_NAME = "Kochi"
-AOI_POLYGON = "./data/kochi_mesh_CRS4326.shp"
+AOI_POLYGON = "../super_comic_city/data/kochi_mesh_CRS4326.shp"
 EVENT_NAME = "KOCHI"
 EVENT_DATE_START = "2023-08-01"
 EVENT_DATE_MAIN = "2023-08-04"
-EVENT_DATE_END = "2023-08-30"
+EVENT_DATE_END = "2023-08-05"
 FILE_PREFIX = "kochi"
 SEASONALITY = 24
 HOURS_TO_FORECAST = 3
@@ -380,6 +380,33 @@ def forecast_mesh(case,meshid,pop):
     plt.ylim(-1, 1)
     figname = Path(case.folderpath, f"plots/{meshid}/errors.png")
     plt.savefig(figname, dpi=300)
+    
+def format_output(case):
+    all_data = ntt.read_object(f'{case.folderpath}/data/*_nttclass_ftype0.pickle')
+    split = PERCENTAGE_OF_DATA_FOR_TRAINING
+    dict_pred = {}
+    t = 0
+    # threshold
+    th = int(split * len(all_data.popm))
+    # Create Training and Test
+    train = all_data.popm.iloc[:th]
+    obs = all_data.popm.iloc[th:]
+    dt_start = train.index[-1].strftime("%Y%m%d%H%M")
+    dt_end = obs.index[-5].strftime("%Y%m%d%H%M")
+    date_index = pd.date_range(dt_start, dt_end, freq='H').strftime("%Y%m%d%H%M")
+
+    for t, dt in enumerate(date_index):
+        for meshid in all_data.list_mesh:
+            pred = ntt.read_object(f'{case.folderpath}/data/{meshid}/*_predictions.pkl')
+            df_pred = pd.DataFrame(pred, columns=['1h','2h','3h'])
+            df_true = pd.DataFrame(all_data.popm[meshid])
+            dict_pred[meshid] = df_pred.iloc[t]
+        temp = pd.DataFrame(dict_pred).T.astype(int)
+        temp['meshid'] = temp.index
+        temp = temp.reset_index(drop=True)
+        temp = temp[['meshid','1h','2h','3h']]
+        temp.to_csv(f'{case.folderpath}/output/{dt}.csv', index=False)
+    
 
 if __name__ == "__main__":
     print("Starting")
@@ -410,3 +437,4 @@ if __name__ == "__main__":
         os.makedirs(Path(ROOT, "figures", str(meshid)), exist_ok=True)
         os.makedirs(Path(ROOT, "plots", str(meshid)), exist_ok=True)
         forecast_mesh(case,meshid,case.popm[meshid])
+    format_output(case)

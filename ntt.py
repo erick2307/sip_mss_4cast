@@ -11,7 +11,7 @@ import contextily as ctx
 import matplotlib.pyplot as plt
 import matplotlib
 import zipfile
-import private as pv #custom module
+from dotenv import load_dotenv
 from datetime import datetime, date, timedelta
 from cmcrameri import cm
 from pathlib import Path
@@ -19,6 +19,9 @@ from tqdm import tqdm
 
 matplotlib.use("Agg")  # to solve issue on out of memory
 plt.style.use("default")
+
+def configure():
+    load_dotenv()
 
 def read_object(path):
     """To load data from a pickle"""
@@ -28,7 +31,7 @@ def read_object(path):
 
 # search for the ZIP files on a specific year.month.date
 def zippedfiles(year=2022, month=10, date=1):
-    folder = Path(pv.HOME_DIR,f"{year}{month:02d}{date:02d}")
+    folder = Path(os.getenv('HOME_DIR'),f"{year}{month:02d}{date:02d}")
     zipfiles = sorted(glob.glob(os.path.join(folder, "*.zip")))
     return zipfiles
 
@@ -37,10 +40,10 @@ def zippedfiles(year=2022, month=10, date=1):
 def extractfiles(year=2019, month=1, date=1):
     datefolder = f"{year}{month:02d}{date:02d}"
     if not os.path.exists(
-        os.path.join(pv.HOME_DIR, datefolder)
+        os.path.join(os.getenv('HOME_DIR'), datefolder)
     ):
-        return f"{pv.HOME_DIR}{datefolder} does not exist"
-    outfolder = Path(pv.HOME_DIR,f"{year}_csv/{datefolder}")
+        return f"{os.getenv('HOME_DIR')}{datefolder} does not exist"
+    outfolder = Path(os.getenv('HOME_DIR'),f"{year}_csv/{datefolder}")
     if not os.path.exists(outfolder):
         os.mkdir(outfolder)
     zipfiles = zippedfiles(year, month, date)
@@ -75,6 +78,7 @@ class MobileData:
         dt_end,
         fpfx,
     ):
+        configure()
         self.dfd = {}  # Dataframe of one day data (dynamic)
         self.gdfp = {}  # GeoDataframe of period data (fix)
         self.dft = {}  # Dataframe temporal (when reading from pickle)
@@ -98,7 +102,7 @@ class MobileData:
             print("No AOI_POLYGON path provided. Trying with AOI_MESH...")
         if aoi_mesh == None:
             print("Creating mesh file...")
-            self.aoi_mesh = gpd.read_file(pv.JAPAN_MESH4,mask=self.aoi_pol)
+            self.aoi_mesh = gpd.read_file(os.getenv('JAPAN_MESH4'),mask=self.aoi_pol)
         else:
             print("Reading mesh from file...")
             self.aoi_mesh = gpd.read_file(aoi_mesh)
@@ -144,7 +148,7 @@ class MobileData:
         """Read one day data and
         return a dictionary
         of the day key: hour"""
-        outfolder = Path(pv.HOME_DIR,f"{y}_csv/{y}{m:02d}{d:02d}")
+        outfolder = Path(os.getenv('HOME_DIR'),f"{y}_csv/{y}{m:02d}{d:02d}")
         # create csv path and filenames list
         csvfiles = sorted(glob.glob(os.path.join(outfolder, f"*{ftype}.csv")))
         # read all data
