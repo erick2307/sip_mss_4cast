@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "kochi_onemesh",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "OBJECTID": 1569894, "MESH1_ID": 5033, "MESH2_ID": 503324, "MESH3_ID": 50332473, "MESH4_ID": 503324732, "Shape_Leng": 0.020833333, "Shape_Area": 2.60417e-05, "max5wgs84": 0.1257057177, "tsu": 1 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 133.543749999862598, 33.562499999575323 ], [ 133.550000000299747, 33.562499999575323 ], [ 133.550000000299747, 33.558333333516487 ], [ 133.543749999862598, 33.558333333516487 ], [ 133.543749999862598, 33.562499999575323 ] ] ] ] } }
+]
+}

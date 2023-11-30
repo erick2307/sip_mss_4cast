@@ -21,7 +21,7 @@ from sklearn.metrics import mean_squared_error
 # Parameters for area
 MESH_ID = 533936534
 AOI_NAME = "Kochi"
-AOI_POLYGON = "../super_comic_city/data/kochi_mesh_CRS4326.shp"
+AOI_POLYGON = "./data/kochi_onemesh.geojson"
 EVENT_NAME = "KOCHI"
 EVENT_DATE_START = "2023-08-01"
 EVENT_DATE_MAIN = "2023-08-04"
@@ -382,7 +382,7 @@ def forecast_mesh(case,meshid,pop):
     plt.savefig(figname, dpi=300)
     
 def format_output(case):
-    all_data = ntt.read_object(f'{case.folderpath}/data/*_nttclass_ftype0.pickle')
+    all_data = ntt.read_object(f'{case.folderpath}/data/{FILE_PREFIX}_nttclass_ftype0.pickle')
     split = PERCENTAGE_OF_DATA_FOR_TRAINING
     dict_pred = {}
     t = 0
@@ -397,7 +397,7 @@ def format_output(case):
 
     for t, dt in enumerate(date_index):
         for meshid in all_data.list_mesh:
-            pred = ntt.read_object(f'{case.folderpath}/data/{meshid}/*_predictions.pkl')
+            pred = ntt.read_object(f'{case.folderpath}/data/{meshid}/{FILE_PREFIX}_predictions.pkl')
             df_pred = pd.DataFrame(pred, columns=['1h','2h','3h'])
             df_true = pd.DataFrame(all_data.popm[meshid])
             dict_pred[meshid] = df_pred.iloc[t]
