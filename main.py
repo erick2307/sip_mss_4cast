@@ -19,13 +19,14 @@ from math import sqrt
 from sklearn.metrics import mean_squared_error
 
 # Parameters for area
-MESH_ID = 533936534
+MESH_ID = 503324732
 AOI_NAME = "Kochi"
-AOI_POLYGON = "./data/kochi_onemesh.geojson"
+AOI_POLYGON = None
+AOI_MESH = "./data/kochi_onemesh.geojson"
 EVENT_NAME = "KOCHI"
-EVENT_DATE_START = "2023-08-01"
-EVENT_DATE_MAIN = "2023-08-04"
-EVENT_DATE_END = "2023-08-05"
+EVENT_DATE_START = "2023-11-01"
+EVENT_DATE_MAIN = "2023-11-10"
+EVENT_DATE_END = "2023-11-20"
 FILE_PREFIX = "kochi"
 SEASONALITY = 24
 HOURS_TO_FORECAST = 3
@@ -383,16 +384,14 @@ def forecast_mesh(case,meshid,pop):
     
 def format_output(case):
     all_data = ntt.read_object(f'{case.folderpath}/data/{FILE_PREFIX}_nttclass_ftype0.pickle')
+    os.makedirs(Path(ROOT, "output"), exist_ok=True)
     split = PERCENTAGE_OF_DATA_FOR_TRAINING
     dict_pred = {}
-    t = 0
-    # threshold
     th = int(split * len(all_data.popm))
-    # Create Training and Test
     train = all_data.popm.iloc[:th]
     obs = all_data.popm.iloc[th:]
     dt_start = train.index[-1].strftime("%Y%m%d%H%M")
-    dt_end = obs.index[-5].strftime("%Y%m%d%H%M")
+    dt_end = obs.index[-HOURS_TO_FORECAST-2].strftime("%Y%m%d%H%M")
     date_index = pd.date_range(dt_start, dt_end, freq='H').strftime("%Y%m%d%H%M")
 
     for t, dt in enumerate(date_index):
@@ -417,7 +416,7 @@ if __name__ == "__main__":
         one_mesh=MESH_ID,
         aoi_name=AOI_NAME,
         aoi_pol=AOI_POLYGON,
-        aoi_mesh=None,
+        aoi_mesh=AOI_MESH,
         event_name=EVENT_NAME,
         dt_start=EVENT_DATE_START,
         dt_main=EVENT_DATE_MAIN,
@@ -438,3 +437,4 @@ if __name__ == "__main__":
         os.makedirs(Path(ROOT, "plots", str(meshid)), exist_ok=True)
         forecast_mesh(case,meshid,case.popm[meshid])
     format_output(case)
+    # forecast_area(case)
