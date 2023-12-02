@@ -22,7 +22,7 @@ from sklearn.metrics import mean_squared_error
 MESH_ID = 503324732
 AOI_NAME = "Kochi"
 AOI_POLYGON = None
-AOI_MESH = "./data/kochi_onemesh.geojson"
+AOI_MESH = "./data/kochi_z01mesh.geojson"
 EVENT_NAME = "KOCHI"
 EVENT_DATE_START = "2023-11-01"
 EVENT_DATE_MAIN = "2023-11-10"

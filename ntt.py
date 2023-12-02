@@ -108,7 +108,7 @@ class MobileData:
             self.aoi_mesh = gpd.read_file(aoi_mesh)
         self.aoi_mesh.to_file(
             Path(
-                self.folderpath, "data", f"./{self.fpfx}_{self.aoi_name}_mesh.geojson"
+                self.folderpath, "data", f"./{self.fpfx}_mesh.geojson"
             ),
             driver="GeoJSON",
         )
