@@ -9,6 +9,10 @@ __pycache__/
 # Folders
 tests/
 
+# Files
+ToDo.md
+.DS_Store
+
 # Distribution / packaging
 .Python
 build/
