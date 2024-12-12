@@ -10,7 +10,7 @@ Python 3.11.6
 
 ## Usage
 
-1. Download the MSS data and store unipped in `HOME_DIR` directory.
+1. Download the MSS data and store unzipped in `HOME_DIR` directory.
 2. Create an `.env` file with the following contents:  
 
     ```text
